@@ -1,0 +1,284 @@
+openapi: 3.0.4
+info:
+  description: "Proof Of Concept for client digital signature"
+  version: "1.0.0"
+  title: "Digital Signature POC"
+servers:
+  - url: https://dspoc.swagger.io/api/v1
+paths:
+  /trades:
+    get:
+      tags:
+        - trades
+      summary: "Get list of trade proposals"
+      description: "Retrieve the complete list of trade proposals"
+      responses:
+        200:
+          description: "List retrieved succesfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeProposalList'
+        401:
+          description: "Authentication required"
+        403:
+          description: "Access denied"
+  /trades/proposal:
+    post:
+      tags:
+        - trades
+      summary: "Create a new random trade proposal."
+      description: "Create a new random trade proposal."
+      responses:
+        200:
+          description: "Chat created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeProposalCreate'
+        401:
+          description: "Authentication required"
+        403:
+          description: "Access denied"
+  /trades/{id}/sign:
+    post:
+      tags:
+        - trades
+      summary: "Sign the trade proposal"
+      description: "Sign the trade proposal"
+      parameters:
+        - name: id
+          in: path
+          description: "Unique identifier of trade to sign"
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 123
+      requestBody:
+        description: "Trade sign request body"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TradeSignRequest'
+      responses:
+        200:
+          description: "Trade proposal signed succesfully"
+        401:
+          description: "Authentication required"
+        403:
+          description: "Access denied"
+        404:
+          description: "Trade proposal not found"
+  /users/me/keys/active:
+    get:
+      tags:
+        - users
+      summary: "Get active key for the current user"
+      responses:
+        200:
+          description: "Active key retrieved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserActiveKeyResponse'
+        401:
+          description: "Authentication required"
+        403:
+          description: "Access denied"
+        404:
+          description: "No key found. Please perform onboarding process"
+  /users/me/keys/onboarding:
+    post:
+      tags:
+        - users
+      summary: "Perform key onboarding process for the current user"
+      requestBody:
+        description: "Key onboarding request body"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserKeyOnboardingRequest'
+      responses:
+        200:
+          description: "Key Onboarding performed successfully"
+        401:
+          description: "Authentication required"
+        403:
+          description: "Access denied"
+        404:
+          description: "Trade proposal not found"
+  /users/me/keys/rotate:
+    post:
+      tags:
+        - users
+      summary: "Perform key rotate / recovery process for the current user"
+      requestBody:
+        description: "Key rotate / recovery request body"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserKeyOnboardingRequest'
+      responses:
+        200:
+          description: "Key Rotation performed successfully"
+        401:
+          description: "Authentication required"
+        403:
+          description: "Access denied"
+        404:
+          description: "Trade proposal not found"
+components:
+  schemas:
+    TradeProposalList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TradeProposalDetails'
+    TradeProposalDetails:
+      type: object
+      properties:
+        id: 
+          type: integer
+          format: int64
+          description: "Unique identifier for the trade proposal"
+          example: 123
+        metadata:
+          $ref: '#/components/schemas/TradeMedatata'
+        metadataRaw:
+          type: string
+          description: "Raw metadata string for signing purposes"
+          example: "abc"
+        status:
+          type: string
+          description: "Status of the trade proposal"
+          enum: ["pending", "signed"]
+          example: "pending"
+        action:
+          type: string
+          description: "Action taken from the customer on the trade proposal"
+          nullable: true
+          enum: [null, "accepted", "rejected"]
+          example: null
+        createdAt:
+          type: integer
+          format: int64
+          description: "Creation timestamp in unix timestamp milliseconds format"
+          example: 1763645209976
+        signedAt:
+          type: integer
+          format: int64
+          nullable: true
+          description: "Signing timestamp in unix timestamp milliseconds format"
+          example: null
+    TradeProposalCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "Unique identifier for the trade proposal"
+          example: 123
+        metadata:
+          $ref: '#/components/schemas/TradeMedatata'
+        metadataRaw:
+          type: string
+          description: "Raw metadata string for signing purposes"
+          example: "abc"
+        createdAt:
+          type: integer
+          format: int64
+          description: "Unix timestamp in milliseconds"
+          example: 1763645209976
+    TradeMedatata:
+      type: object
+      properties:
+        trades:
+          type: array
+          items:
+            $ref: '#/components/schemas/TradeItem'
+    TradeItem:
+      type: object
+      properties:
+        isin:
+          type: string
+          description: "Item ISIN"
+          maxLength: 255
+          example: "LU0290358497"
+        qty:
+          type: number
+          format: int64
+          description: "Item quantity"
+          example: 1
+        price:
+          type: number
+          format: double
+          description: "Item price"
+          example: 34.56
+        ccy:
+          type: string
+          description: "Item currency"
+          maxLength: 3
+          example: "EUR"
+    TradeSignRequest:
+      type: object
+      properties:
+        tradeId:
+          type: integer
+          format: int64
+          description: "Id of the trade to be signed"
+          example: 123
+        signature:
+          type: string
+          description: "signature in base64 format"
+          example: "abc"
+        signingKeyId:
+          type: integer
+          format: int64
+          description: "signing key id"
+          example: 123
+        signedAction:
+          type: string
+          enum: ["accepted", "rejected"]
+          example: "accepted"
+        signedAt:
+          type: integer
+          format: int64
+          description: "Unix timestamp in milliseconds"
+          example: 1763645209976
+    UserActiveKeyResponse:
+      type: object
+      properties:
+        encryptedPrivateKey:
+          type: string
+          description: "Encrypted Private Key base64 representation"
+          example: "abc"
+        salt:
+          type: string
+          description: "Key Salt"
+          example: "abc"
+        iv:
+          type: string
+          description: "Key IV"
+          example: "abc"
+    UserKeyOnboardingRequest:
+      type: object
+      properties:
+        publicKey:
+          type: string
+          description: "Public key base64 representation"
+          example: "abc"
+        encryptedPrivateKey:
+          type: string
+          description: "Encrypted Private key base64 representation"
+          example: "abc"
+        salt:
+          type: string
+          description: "Key Salt"
+          example: "abc"
+        iv:
+          type: string
+          description: "Key IV"
+          example: "abc"
