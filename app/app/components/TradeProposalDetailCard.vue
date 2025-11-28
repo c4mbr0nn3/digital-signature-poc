@@ -74,16 +74,30 @@
 
     <div v-if="proposal.status === 'pending'" class="flex gap-4">
       <button
-        class="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+        @click="handleAccept"
+        :disabled="isProcessing"
+        class="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Accept
+        {{ isProcessing && pendingAction === 'accept' ? 'Processing...' : 'Accept' }}
       </button>
       <button
-        class="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+        @click="handleReject"
+        :disabled="isProcessing"
+        class="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Reject
+        {{ isProcessing && pendingAction === 'reject' ? 'Processing...' : 'Reject' }}
       </button>
     </div>
+
+    <PassphraseModal
+      :is-open="showPassphraseModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      :is-processing="isProcessing"
+      :error="signingError"
+      @submit="handlePassphraseSubmit"
+      @cancel="handlePassphraseCancel"
+    />
   </div>
 </template>
 
@@ -94,11 +108,54 @@ const props = defineProps<{
   proposal: TradeProposalDetails
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   close: []
+  signed: []
 }>()
 
 const { formatTimestamp } = useTradeProposals()
+const { signTrade, isProcessing, error: signingError } = useSigning()
+
+const showPassphraseModal = ref(false)
+const pendingAction = ref<'accept' | 'reject' | null>(null)
+
+const modalTitle = computed(() => {
+  return pendingAction.value === 'accept'
+    ? 'Accept Trade Proposal'
+    : 'Reject Trade Proposal'
+})
+
+const modalMessage = computed(() => {
+  const action = pendingAction.value === 'accept' ? 'accept' : 'reject'
+  return `Enter your signing passphrase to ${action} this trade proposal. This action will be cryptographically signed and cannot be repudiated.`
+})
+
+const handleAccept = () => {
+  pendingAction.value = 'accept'
+  showPassphraseModal.value = true
+}
+
+const handleReject = () => {
+  pendingAction.value = 'reject'
+  showPassphraseModal.value = true
+}
+
+const handlePassphraseSubmit = async (passphrase: string) => {
+  if (!pendingAction.value) return
+
+  const success = await signTrade(props.proposal, pendingAction.value, passphrase)
+
+  if (success) {
+    showPassphraseModal.value = false
+    pendingAction.value = null
+    emit('signed')
+  }
+}
+
+const handlePassphraseCancel = () => {
+  showPassphraseModal.value = false
+  pendingAction.value = null
+}
 
 const statusText = computed(() => {
   if (props.proposal.status === 'signed') {
