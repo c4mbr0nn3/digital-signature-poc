@@ -6,7 +6,7 @@ info:
 servers:
   - url: https://dspoc.swagger.io/api/v1
 paths:
-  /trades:
+  /api/v1/trades:
     get:
       tags:
         - trades
@@ -23,7 +23,7 @@ paths:
           description: "Authentication required"
         403:
           description: "Access denied"
-  /trades/proposal:
+  /api/v1/trades/proposal:
     post:
       tags:
         - trades
@@ -40,7 +40,7 @@ paths:
           description: "Authentication required"
         403:
           description: "Access denied"
-  /trades/{id}/sign:
+  /api/v1/trades/{id}/sign:
     post:
       tags:
         - trades
@@ -71,7 +71,7 @@ paths:
           description: "Access denied"
         404:
           description: "Trade proposal not found"
-  /users/me/keys/active:
+  /api/v1/users/me/keys/active:
     get:
       tags:
         - users
@@ -89,7 +89,7 @@ paths:
           description: "Access denied"
         404:
           description: "No key found. Please perform onboarding process"
-  /users/me/keys/onboarding:
+  /api/v1/users/me/keys/onboarding:
     post:
       tags:
         - users
@@ -110,7 +110,7 @@ paths:
           description: "Access denied"
         404:
           description: "Trade proposal not found"
-  /users/me/keys/rotate:
+  /api/v1/users/me/keys/rotate:
     post:
       tags:
         - users
