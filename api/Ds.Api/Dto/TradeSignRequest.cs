@@ -1,4 +1,6 @@
-﻿namespace Ds.Api.Dto;
+﻿using System.Text.Json.Serialization;
+
+namespace Ds.Api.Dto;
 
 public record TradeSignRequest
 {
@@ -7,4 +9,6 @@ public record TradeSignRequest
     public required int SigningKeyId { get; set; }
     public required string SignedAction { get; set; }
     public required long SignedAt { get; set; }
+
+    [JsonIgnore] public byte[] SignatureBytes => Convert.FromBase64String(Signature);
 }

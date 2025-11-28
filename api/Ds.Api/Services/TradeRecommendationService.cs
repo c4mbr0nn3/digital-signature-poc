@@ -1,8 +1,8 @@
-﻿using Bogus;
+﻿using System.Text;
+using Bogus;
 using Ds.Api.Dto;
 using Ds.Api.Extensions;
 using Ds.Core.Entities;
-using Ds.Core.Enumerations;
 using Ds.Core.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -84,9 +84,13 @@ public class TradeRecommendationService(AppDbContext db) : ITradeRecommendationS
             throw new Exception("Signing key not found");
         }
 
-        // TODO: implement signature verification logic here
+        var canonicalString = MakeCanonicalStringV1(request, tradeRecommendation);
+        var isValidSignature = signingKey.VerifyData(canonicalString.ToUTF8Bytes(), request.SignatureBytes);
+        if (!isValidSignature)
+        {
+            throw new Exception("Invalid signature");
+        }
 
-        // after verification, go on to update the trade recommendation
         tradeRecommendation.Sign(request);
     }
 
@@ -100,5 +104,29 @@ public class TradeRecommendationService(AppDbContext db) : ITradeRecommendationS
 
         signingKey = db.CustomerKeys.FirstOrDefault(ck => ck.Id == signingKeyId);
         return signingKey != null;
+    }
+
+    /// <summary>
+    /// Create the canonical string for signing version V1
+    /// TRADEv1|{trade_id}|{action}|{signed_at}|{metadata_hash}
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="tradeRecommendation"></param>
+    /// <returns></returns>
+    private static string MakeCanonicalStringV1(TradeSignRequest request, TradeRecommendation tradeRecommendation)
+    {
+        const string prefix = "TRADEv1|";
+        const char separator = '|';
+        var tradeId = tradeRecommendation.Id.ToString();
+        var action = request.SignedAction;
+        var signedAt = request.SignedAt.ToString();
+        var metadataHash = tradeRecommendation.MetadataSha256;
+        var builder = new StringBuilder();
+        builder.Append(prefix).Append(separator);
+        builder.Append(tradeId).Append(separator);
+        builder.Append(action).Append(separator);
+        builder.Append(signedAt).Append(separator);
+        builder.Append(metadataHash);
+        return builder.ToString();
     }
 }

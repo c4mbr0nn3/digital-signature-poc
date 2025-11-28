@@ -4,13 +4,16 @@ namespace Ds.Api.Extensions;
 
 public static class BogusExtensions
 {
-    public static string Isin(this Faker faker)
+    extension(Faker faker)
     {
-        var countryCode = faker.Address.CountryCode();
-        var nsin = faker.Random.AlphaNumeric(9).ToUpper();
-        var baseIsin = countryCode + nsin;
-        var checkDigit = CalculateLuhnCheckDigit(baseIsin);
-        return baseIsin + checkDigit;
+        public string Isin()
+        {
+            var countryCode = faker.Address.CountryCode();
+            var nsin = faker.Random.AlphaNumeric(9).ToUpper();
+            var baseIsin = countryCode + nsin;
+            var checkDigit = CalculateLuhnCheckDigit(baseIsin);
+            return baseIsin + checkDigit;
+        }
     }
 
     private static int CalculateLuhnCheckDigit(string baseIsin)

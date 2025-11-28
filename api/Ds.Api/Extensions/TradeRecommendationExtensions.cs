@@ -1,4 +1,5 @@
-﻿using Ds.Api.Dto;
+﻿using System.Security.Cryptography;
+using Ds.Api.Dto;
 using Ds.Core.Entities;
 using Ds.Core.Enumerations;
 
@@ -31,10 +32,18 @@ public static class TradeRecommendationExtensions
 
         public void Sign(TradeSignRequest request)
         {
-            recommendation.Signature = Convert.FromBase64String(request.Signature);
+            recommendation.Signature = request.SignatureBytes;
             recommendation.SigningKeyId = request.SigningKeyId;
             recommendation.SignedAt = request.SignedAt;
             recommendation.SignAction = SignActionParser.Parse(request.SignedAction);
+        }
+
+        public string MetadataSha256()
+        {
+            var bytes = recommendation.MetadataRaw.ToUTF8Bytes();
+            var hashBytes = SHA256.HashData(bytes);
+            // check if the representation should be hex string or base64
+            return Convert.ToHexString(hashBytes).ToLowerInvariant();
         }
     }
 }

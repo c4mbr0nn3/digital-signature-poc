@@ -1,15 +1,27 @@
-﻿using Ds.Api.Dto;
+﻿using System.Security.Cryptography;
+using Ds.Api.Dto;
 using Ds.Core.Entities;
 
 namespace Ds.Api.Extensions;
 
 public static class CustomerKeyExtensions
 {
-    public static CustomerActiveKeyResponse ToCustomerActiveKeyResponse(this CustomerKey ck) =>
-        new()
+    extension(CustomerKey ck)
+    {
+        public CustomerActiveKeyResponse ToCustomerActiveKeyResponse() =>
+            new()
+            {
+                EncryptedPrivateKey = Convert.ToBase64String(ck.EncryptedPrivateKey),
+                Salt = Convert.ToBase64String(ck.PrivateKeySalt),
+                Iv = Convert.ToBase64String(ck.Iv),
+            };
+
+        public bool VerifyData(byte[] data, byte[] signature)
         {
-            EncryptedPrivateKey = Convert.ToBase64String(ck.EncryptedPrivateKey),
-            Salt = Convert.ToBase64String(ck.PrivateKeySalt),
-            Iv = Convert.ToBase64String(ck.Iv),
-        };
+            // verify the signature using the ECDSA public key
+            using var ecdsa = ECDsa.Create();
+            ecdsa.ImportSubjectPublicKeyInfo(ck.PublicKey, out _);
+            return ecdsa.VerifyData(data, signature, HashAlgorithmName.SHA256);
+        }
+    }
 }
