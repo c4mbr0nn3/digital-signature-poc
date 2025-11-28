@@ -11,6 +11,7 @@ public static class CustomerKeyExtensions
         public CustomerActiveKeyResponse ToCustomerActiveKeyResponse() =>
             new()
             {
+                Id = ck.Id,
                 EncryptedPrivateKey = Convert.ToBase64String(ck.EncryptedPrivateKey),
                 Salt = Convert.ToBase64String(ck.PrivateKeySalt),
                 Iv = Convert.ToBase64String(ck.Iv),
