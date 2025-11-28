@@ -97,7 +97,7 @@
           </button>
           <button
             type="submit"
-            :disabled="isProcessing || !passphrase || !passphraseConfirm"
+            :disabled="isProcessing || !passphrase || !passphraseConfirm || !passphraseMatches"
             class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             <span v-if="isProcessing">
@@ -135,6 +135,10 @@ const emit = defineEmits<Emits>()
 
 const passphrase = ref('')
 const passphraseConfirm = ref('')
+
+const passphraseMatches = computed(() => {
+  return passphrase.value === passphraseConfirm.value
+})
 
 // Clear fields when modal closes
 watch(
