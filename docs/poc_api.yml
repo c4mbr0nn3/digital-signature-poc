@@ -14,7 +14,7 @@ paths:
       description: "Retrieve the complete list of trade proposals"
       responses:
         200:
-          description: "List retrieved succesfully"
+          description: "List retrieved successfully"
           content:
             application/json:
               schema:
@@ -64,7 +64,7 @@ paths:
               $ref: '#/components/schemas/TradeSignRequest'
       responses:
         200:
-          description: "Trade proposal signed succesfully"
+          description: "Trade proposal signed successfully"
         401:
           description: "Authentication required"
         403:
@@ -140,7 +140,7 @@ components:
     TradeProposalDetails:
       type: object
       properties:
-        id: 
+        id:
           type: integer
           format: int64
           description: "Unique identifier for the trade proposal"
