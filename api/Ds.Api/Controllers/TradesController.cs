@@ -1,4 +1,5 @@
-﻿using Ds.Core.Services;
+﻿using Ds.Api.Dto;
+using Ds.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ds.Api.Controllers;
@@ -10,12 +11,12 @@ public class TradesController(
     ITradeRecommendationService tradeRecommendationService) : ControllerBase
 {
     [HttpPost("proposal")]
-    public IActionResult CreateTradeRecommendation()
+    public async Task<ActionResult<TradeProposalCreateResponse>> CreateTradeRecommendation()
     {
         try
         {
-            var recommendation = tradeRecommendationService.CreateRandomTradeRecommendation();
-            return Ok(recommendation);
+            var result = await tradeRecommendationService.CreateRandomTradeRecommendation();
+            return Ok(result);
         }
         catch (Exception e)
         {

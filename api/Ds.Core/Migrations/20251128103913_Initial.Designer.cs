@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ds.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251121142648_Initial")]
+    [Migration("20251128103913_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -26,7 +26,7 @@ namespace Ds.Core.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
-                    b.Property<int>("ActiveKeyId")
+                    b.Property<int?>("ActiveKeyId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("active_key_id");
 
@@ -44,6 +44,13 @@ namespace Ds.Core.Migrations
                         .IsUnique();
 
                     b.ToTable("customers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "Sydney_Roberts4@hotmail.com"
+                        });
                 });
 
             modelBuilder.Entity("Ds.Core.Entities.CustomerKey", b =>
@@ -138,9 +145,7 @@ namespace Ds.Core.Migrations
                 {
                     b.HasOne("Ds.Core.Entities.CustomerKey", "ActiveKey")
                         .WithMany()
-                        .HasForeignKey("ActiveKeyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ActiveKeyId");
 
                     b.Navigation("ActiveKey");
                 });

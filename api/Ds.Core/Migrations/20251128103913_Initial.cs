@@ -36,7 +36,7 @@ namespace Ds.Core.Migrations
                     id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
-                    active_key_id = table.Column<int>(type: "INTEGER", nullable: false)
+                    active_key_id = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -45,8 +45,7 @@ namespace Ds.Core.Migrations
                         name: "FK_customers_customer_keys_active_key_id",
                         column: x => x.active_key_id,
                         principalTable: "customer_keys",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -77,6 +76,11 @@ namespace Ds.Core.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "customers",
+                columns: new[] { "id", "active_key_id", "email" },
+                values: new object[] { 1, null, "Sydney_Roberts4@hotmail.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_customer_keys_customer_id",
