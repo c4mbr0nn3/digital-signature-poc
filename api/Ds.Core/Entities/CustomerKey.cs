@@ -18,6 +18,4 @@ public class CustomerKey
     [Column("superseded_at")] public long? SupersededAt { get; set; }
 
     [ForeignKey(nameof(CustomerId))] public virtual Customer? Customer { get; set; }
-
-    [NotMapped] public bool IsActive => SupersededAt == null;
 }

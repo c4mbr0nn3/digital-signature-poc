@@ -23,4 +23,34 @@ public class UsersController(ILogger<UsersController> logger, ICustomerKeyServic
             throw;
         }
     }
+
+    [HttpPost("me/keys/onboarding")]
+    public async Task<IActionResult> OnboardCustomerKey(CustomerKeyOnboardingRequest request)
+    {
+        try
+        {
+            await customerKeyService.OnboardCustomerKey(request);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error onboarding customer key for current user: {Message}", e.Message);
+            throw;
+        }
+    }
+
+    [HttpPost("me/keys/rotate")]
+    public async Task<IActionResult> RotateCustomerKey(CustomerKeyOnboardingRequest request)
+    {
+        try
+        {
+            await customerKeyService.RotateCustomerKey(request);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error rotating customer key for current user: {Message}", e.Message);
+            throw;
+        }
+    }
 }

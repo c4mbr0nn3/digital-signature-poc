@@ -8,6 +8,8 @@ namespace Ds.Api.Services;
 public interface ICustomerKeyService
 {
     Task<CustomerActiveKeyResponse?> GetActiveUserKey();
+    Task OnboardCustomerKey(CustomerKeyOnboardingRequest request);
+    Task RotateCustomerKey(CustomerKeyOnboardingRequest request);
 }
 
 public class CustomerKeyService(AppDbContext db) : ICustomerKeyService
@@ -18,10 +20,46 @@ public class CustomerKeyService(AppDbContext db) : ICustomerKeyService
         if (customerId == 0) throw new Exception("Customer not found");
 
         var activeKey = await db.CustomerKeys
-            .Where(ck => ck.CustomerId == customerId && ck.IsActive)
+            .Where(ck => ck.CustomerId == customerId && ck.SupersededAt == null)
             .Select(ck => ck.ToCustomerActiveKeyResponse())
             .FirstOrDefaultAsync();
 
         return activeKey;
+    }
+
+    public async Task OnboardCustomerKey(CustomerKeyOnboardingRequest request)
+    {
+        var customer = await db.Customers.FirstOrDefaultAsync();
+        if (customer == null) throw new Exception("Customer not found");
+        var customerId = customer.Id;
+
+        var anyKeys = await db.CustomerKeys.AnyAsync(ck => ck.CustomerId == customerId);
+        if (anyKeys) throw new Exception("Customer already has a key onboarded");
+        var customerKey = request.ToEntity(customerId);
+        await db.CustomerKeys.AddAsync(customerKey);
+        await db.SaveChangesAsync();
+
+        customer.ActiveKeyId = customerKey.Id;
+        await db.SaveChangesAsync();
+    }
+
+    public async Task RotateCustomerKey(CustomerKeyOnboardingRequest request)
+    {
+        var customer = await db.Customers.FirstOrDefaultAsync();
+        if (customer == null) throw new Exception("Customer not found");
+        var customerId = customer.Id;
+
+        var activeKey = await db.CustomerKeys
+            .FirstOrDefaultAsync(ck => ck.CustomerId == customerId && ck.SupersededAt == null);
+        if (activeKey == null) throw new Exception("No active key found to rotate");
+
+        activeKey.SupersededAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+        var newCustomerKey = request.ToEntity(customerId);
+        await db.CustomerKeys.AddAsync(newCustomerKey);
+        await db.SaveChangesAsync();
+
+        customer.ActiveKeyId = newCustomerKey.Id;
+        await db.SaveChangesAsync();
     }
 }
