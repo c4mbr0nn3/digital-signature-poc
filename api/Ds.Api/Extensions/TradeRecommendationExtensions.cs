@@ -28,5 +28,13 @@ public static class TradeRecommendationExtensions
                 MetadataRaw = recommendation.MetadataRaw,
                 CreatedAt = recommendation.CreatedAt
             };
+
+        public void Sign(TradeSignRequest request)
+        {
+            recommendation.Signature = Convert.FromBase64String(request.Signature);
+            recommendation.SigningKeyId = request.SigningKeyId;
+            recommendation.SignedAt = request.SignedAt;
+            recommendation.SignAction = SignActionParser.Parse(request.SignedAction);
+        }
     }
 }

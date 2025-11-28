@@ -20,3 +20,17 @@ public static class SignActionExtensions
         };
     }
 }
+
+public static class SignActionParser
+{
+    public static SignAction Parse(string action)
+    {
+        return action.ToLower() switch
+        {
+            "pending" => SignAction.Pending,
+            "accepted" => SignAction.Accepted,
+            "rejected" => SignAction.Rejected,
+            _ => throw new ArgumentException("Invalid sign action", nameof(action))
+        };
+    }
+}

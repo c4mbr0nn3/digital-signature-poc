@@ -39,4 +39,19 @@ public class TradesController(
             return StatusCode(500, "Internal server error");
         }
     }
+
+    [HttpPost("{id:int}/sign")]
+    public async Task<IActionResult> SignTradeRecommendation(int id, TradeSignRequest request)
+    {
+        try
+        {
+            await tradeRecommendationService.SignTradeRecommendation(id, request);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error signing trade recommendation: {Message}", e.Message);
+            return StatusCode(500, "Internal server error");
+        }
+    }
 }

@@ -14,6 +14,7 @@ public class TradeRecommendation
     [Column("id"), Key] public int Id { get; set; }
     [Column("customer_id")] public int CustomerId { get; set; }
     [Column("metadata")] public required string MetadataRaw { get; set; }
+    [Column("signature")] public byte[]? Signature { get; set; }
     [Column("signed_action")] public int SignedAction { get; set; } = (int)SignAction.Pending;
     [Column("signed_at")] public long? SignedAt { get; set; }
     [Column("signing_key_id")] public int? SigningKeyId { get; set; }

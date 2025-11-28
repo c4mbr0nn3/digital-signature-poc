@@ -2,6 +2,7 @@
 using Ds.Api.Dto;
 using Ds.Api.Extensions;
 using Ds.Core.Entities;
+using Ds.Core.Enumerations;
 using Ds.Core.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ public interface ITradeRecommendationService
 {
     Task<List<TradeProposalDetails>> GetTradesRecommendations();
     Task<TradeProposalCreateResponse> CreateRandomTradeRecommendation();
+    Task SignTradeRecommendation(int id, TradeSignRequest request);
 }
 
 public class TradeRecommendationService(AppDbContext db) : ITradeRecommendationService
@@ -58,5 +60,45 @@ public class TradeRecommendationService(AppDbContext db) : ITradeRecommendationS
         await db.SaveChangesAsync();
 
         return tradeRecommendation.ToTradeProposalCreateResponse();
+    }
+
+    public async Task SignTradeRecommendation(int id, TradeSignRequest request)
+    {
+        var customer = await db.Customers.FirstOrDefaultAsync();
+        if (customer == null) throw new Exception("Customer not found");
+        if (customer.ActiveKeyId == null) throw new Exception("Customer has no active signing key");
+        var customerId = customer.Id;
+
+        var tradeRecommendation = await db.TradeRecommendations
+            .FirstOrDefaultAsync(tr => tr.Id == id && tr.CustomerId == customerId);
+        if (tradeRecommendation == null) throw new Exception("Trade recommendation not found");
+
+        if (!TryGetSigningKey(request.SigningKeyId, customer.ActiveKeyId.Value, out var signingKey))
+        {
+            throw new Exception("Invalid signing key");
+        }
+
+        // this seems redundant but is to satisfy the nullable warning
+        if (signingKey == null)
+        {
+            throw new Exception("Signing key not found");
+        }
+
+        // TODO: implement signature verification logic here
+
+        // after verification, go on to update the trade recommendation
+        tradeRecommendation.Sign(request);
+    }
+
+    private bool TryGetSigningKey(int signingKeyId, int customerActiveKey, out CustomerKey? signingKey)
+    {
+        if (signingKeyId != customerActiveKey)
+        {
+            signingKey = null;
+            return false;
+        }
+
+        signingKey = db.CustomerKeys.FirstOrDefault(ck => ck.Id == signingKeyId);
+        return signingKey != null;
     }
 }
