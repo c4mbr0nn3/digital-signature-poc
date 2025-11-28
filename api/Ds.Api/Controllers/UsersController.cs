@@ -14,6 +14,7 @@ public class UsersController(ILogger<UsersController> logger, ICustomerKeyServic
         try
         {
             var result = await customerKeyService.GetActiveUserKey();
+            if (result == null) return NotFound("Active key not found for current user.");
             return Ok(result);
         }
         catch (Exception e)
