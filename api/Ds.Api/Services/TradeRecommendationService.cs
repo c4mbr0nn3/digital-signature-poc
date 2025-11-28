@@ -92,6 +92,7 @@ public class TradeRecommendationService(AppDbContext db) : ITradeRecommendationS
         }
 
         tradeRecommendation.Sign(request);
+        await db.SaveChangesAsync();
     }
 
     private bool TryGetSigningKey(int signingKeyId, int customerActiveKey, out CustomerKey? signingKey)
@@ -115,7 +116,7 @@ public class TradeRecommendationService(AppDbContext db) : ITradeRecommendationS
     /// <returns></returns>
     private static string MakeCanonicalStringV1(TradeSignRequest request, TradeRecommendation tradeRecommendation)
     {
-        const string prefix = "TRADEv1|";
+        const string prefix = "TRADEv1";
         const char separator = '|';
         var tradeId = tradeRecommendation.Id.ToString();
         var action = request.SignedAction;
