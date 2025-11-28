@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Ds.Core.Enumerations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ds.Core.Entities;
@@ -13,10 +14,7 @@ public class TradeRecommendation
     [Column("id"), Key] public int Id { get; set; }
     [Column("customer_id")] public int CustomerId { get; set; }
     [Column("metadata")] public required string MetadataRaw { get; set; }
-
-    [Column("signed_action"), MaxLength(10)]
-    public string? SignedAction { get; set; }
-
+    [Column("signed_action")] public int SignedAction { get; set; } = (int)SignAction.Pending;
     [Column("signed_at")] public long? SignedAt { get; set; }
     [Column("signing_key_id")] public int? SigningKeyId { get; set; }
     [Column("created_at")] public long CreatedAt { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -30,6 +28,15 @@ public class TradeRecommendation
         get => JsonSerializer.Deserialize<Metadata>(MetadataRaw) ?? new Metadata();
         set => MetadataRaw = JsonSerializer.Serialize(value);
     }
+
+    [NotMapped]
+    public SignAction SignAction
+    {
+        get => (SignAction)SignedAction;
+        set => SignedAction = (int)value;
+    }
+
+    [NotMapped] public TradeStatus Status => SignedAt.HasValue ? TradeStatus.Signed : TradeStatus.Pending;
 }
 
 public class Metadata

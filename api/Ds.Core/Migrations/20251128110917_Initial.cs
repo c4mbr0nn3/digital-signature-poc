@@ -56,7 +56,7 @@ namespace Ds.Core.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     customer_id = table.Column<int>(type: "INTEGER", nullable: false),
                     metadata = table.Column<string>(type: "TEXT", nullable: false),
-                    signed_action = table.Column<string>(type: "TEXT", maxLength: 10, nullable: true),
+                    signed_action = table.Column<int>(type: "INTEGER", nullable: false),
                     signed_at = table.Column<long>(type: "INTEGER", nullable: true),
                     signing_key_id = table.Column<int>(type: "INTEGER", nullable: true),
                     created_at = table.Column<long>(type: "INTEGER", nullable: false)

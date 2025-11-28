@@ -10,6 +10,21 @@ public class TradesController(
     ILogger<TradesController> logger,
     ITradeRecommendationService tradeRecommendationService) : ControllerBase
 {
+    [HttpGet]
+    public async Task<ActionResult<string>> GetTradeRecommendations()
+    {
+        try
+        {
+            var result = await tradeRecommendationService.GetTradesRecommendations();
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error fetching trade recommendations: {Message}", e.Message);
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
     [HttpPost("proposal")]
     public async Task<ActionResult<TradeProposalCreateResponse>> CreateTradeRecommendation()
     {

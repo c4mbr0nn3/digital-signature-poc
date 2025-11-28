@@ -116,9 +116,8 @@ namespace Ds.Core.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("metadata");
 
-                    b.Property<string>("SignedAction")
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT")
+                    b.Property<int>("SignedAction")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("signed_action");
 
                     b.Property<long?>("SignedAt")

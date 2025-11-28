@@ -9,11 +9,29 @@ namespace Ds.Api.Services;
 
 public interface ITradeRecommendationService
 {
+    Task<List<TradeProposalDetails>> GetTradesRecommendations();
     Task<TradeProposalCreateResponse> CreateRandomTradeRecommendation();
 }
 
 public class TradeRecommendationService(AppDbContext db) : ITradeRecommendationService
 {
+    public async Task<List<TradeProposalDetails>> GetTradesRecommendations()
+    {
+        var customerId = await db.Customers.Select(x => x.Id).FirstOrDefaultAsync();
+        if (customerId == 0) throw new Exception("Customer not found");
+
+        var tradeRecommendation = await db.TradeRecommendations
+            .Where(tr => tr.CustomerId == customerId)
+            .OrderByDescending(tr => tr.CreatedAt)
+            .ToListAsync();
+
+        var result = tradeRecommendation
+            .Select(tr => tr.ToTradeProposalDetails())
+            .ToList();
+
+        return result;
+    }
+
     public async Task<TradeProposalCreateResponse> CreateRandomTradeRecommendation()
     {
         var customerId = await db.Customers.Select(x => x.Id).FirstOrDefaultAsync();
@@ -39,6 +57,6 @@ public class TradeRecommendationService(AppDbContext db) : ITradeRecommendationS
         await db.TradeRecommendations.AddAsync(tradeRecommendation);
         await db.SaveChangesAsync();
 
-        return tradeRecommendation.ToDto();
+        return tradeRecommendation.ToTradeProposalCreateResponse();
     }
 }

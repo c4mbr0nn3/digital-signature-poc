@@ -12,7 +12,7 @@ public record TradeProposalCreateResponse
 
 public static class TradeRecommendationExtensions
 {
-    public static TradeProposalCreateResponse ToDto(this TradeRecommendation recommendation) =>
+    public static TradeProposalCreateResponse ToTradeProposalCreateResponse(this TradeRecommendation recommendation) =>
         new()
         {
             Id = recommendation.Id,
