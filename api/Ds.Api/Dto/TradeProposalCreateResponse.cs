@@ -9,15 +9,3 @@ public record TradeProposalCreateResponse
     public required string MetadataRaw { get; set; }
     public required long CreatedAt { get; set; }
 }
-
-public static class TradeRecommendationExtensions
-{
-    public static TradeProposalCreateResponse ToTradeProposalCreateResponse(this TradeRecommendation recommendation) =>
-        new()
-        {
-            Id = recommendation.Id,
-            Metadata = recommendation.Metadata,
-            MetadataRaw = recommendation.MetadataRaw,
-            CreatedAt = recommendation.CreatedAt
-        };
-}

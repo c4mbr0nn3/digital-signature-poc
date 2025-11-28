@@ -14,6 +14,7 @@ builder.Host.UseSerilog((c, lc) =>
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=app.db"));
 builder.Services.AddScoped<ITradeRecommendationService, TradeRecommendationService>();
+builder.Services.AddScoped<ICustomerKeyService, CustomerKeyService>();
 
 builder.Services.AddControllers();
 
