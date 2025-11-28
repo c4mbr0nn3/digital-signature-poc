@@ -116,6 +116,10 @@ namespace Ds.Core.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("metadata");
 
+                    b.Property<byte[]>("Signature")
+                        .HasColumnType("BLOB")
+                        .HasColumnName("signature");
+
                     b.Property<int>("SignedAction")
                         .HasColumnType("INTEGER")
                         .HasColumnName("signed_action");

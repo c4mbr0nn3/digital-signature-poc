@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ds.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251128110917_Initial")]
+    [Migration("20251128144948_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -118,6 +118,10 @@ namespace Ds.Core.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("metadata");
+
+                    b.Property<byte[]>("Signature")
+                        .HasColumnType("BLOB")
+                        .HasColumnName("signature");
 
                     b.Property<int>("SignedAction")
                         .HasColumnType("INTEGER")
