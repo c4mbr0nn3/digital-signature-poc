@@ -32,7 +32,7 @@ export interface TradeProposalCreateResponse {
 export interface CustomerActiveKeyResponse {
   id: number
   encryptedPrivateKey: string
-  privateKeySalt: string
+  salt: string
   iv: string
 }
 
