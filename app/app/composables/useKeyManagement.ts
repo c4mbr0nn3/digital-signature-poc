@@ -5,7 +5,7 @@ import type { CustomerActiveKeyResponse, CustomerKeyOnboardingRequest } from '~/
  * Handles key onboarding, rotation, and active key state
  */
 export const useKeyManagement = () => {
-  const { apiFetch } = useApi()
+  const api = useApi()
   const crypto = useCrypto()
 
   const hasActiveKey = ref<boolean | null>(null) // null = unknown, true/false = known
@@ -45,7 +45,7 @@ export const useKeyManagement = () => {
    * Updates hasActiveKey state
    */
   const checkActiveKey = async (): Promise<void> => {
-    const { data, error: apiError } = await apiFetch<CustomerActiveKeyResponse>(
+    const { data, error: apiError } = await api.get<CustomerActiveKeyResponse>(
       '/users/me/keys/active'
     )
 
@@ -118,10 +118,7 @@ export const useKeyManagement = () => {
       }
 
       // Submit to server
-      const { data, error: apiError } = await apiFetch<number>('/users/me/keys/onboarding', {
-        method: 'POST',
-        body: request,
-      })
+      const { data, error: apiError } = await api.post<number>('/users/me/keys/onboarding', request)
 
       if (apiError || !data) {
         error.value = apiError || 'Failed to onboard key'
@@ -201,10 +198,7 @@ export const useKeyManagement = () => {
       }
 
       // Submit to server (rotate endpoint)
-      const { error: apiError } = await apiFetch<void>('/users/me/keys/rotate', {
-        method: 'POST',
-        body: request,
-      })
+      const { error: apiError } = await api.post<void>('/users/me/keys/rotate', request)
 
       if (apiError) {
         error.value = apiError || 'Failed to rotate key'

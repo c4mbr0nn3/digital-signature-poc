@@ -9,7 +9,7 @@ import type {
  * Implements the complete signing flow as per PRD
  */
 export const useSigning = () => {
-  const { apiFetch } = useApi()
+  const api = useApi()
   const crypto = useCrypto()
 
   const isProcessing = ref(false)
@@ -20,7 +20,7 @@ export const useSigning = () => {
    * @returns Customer key data or null on error
    */
   const fetchActiveKey = async (): Promise<CustomerActiveKeyResponse | null> => {
-    const { data, error: apiError } = await apiFetch<CustomerActiveKeyResponse>(
+    const { data, error: apiError } = await api.get<CustomerActiveKeyResponse>(
       '/users/me/keys/active'
     )
 
@@ -113,12 +113,9 @@ export const useSigning = () => {
         signingKeyId: keyData.id,
       }
 
-      const { error: apiError } = await apiFetch<void>(
+      const { error: apiError } = await api.post<void>(
         `/trades/${proposal.id}/sign`,
-        {
-          method: 'POST',
-          body: signRequest,
-        }
+        signRequest
       )
 
       if (apiError) {

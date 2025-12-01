@@ -1,7 +1,7 @@
 import type { TradeProposalDetails, TradeProposalCreateResponse } from '~/types/trade'
 
 export const useTradeProposals = () => {
-  const { apiFetch } = useApi()
+  const api = useApi()
 
   const proposals = ref<TradeProposalDetails[]>([])
   const loading = ref(false)
@@ -13,7 +13,7 @@ export const useTradeProposals = () => {
     loading.value = true
     error.value = null
 
-    const result = await apiFetch<TradeProposalDetails[]>('/trades')
+    const result = await api.get<TradeProposalDetails[]>('/trades')
 
     if (result.error) {
       error.value = result.error
@@ -52,9 +52,7 @@ export const useTradeProposals = () => {
     generating.value = true
     error.value = null
 
-    const result = await apiFetch<TradeProposalCreateResponse>('/trades/proposal', {
-      method: 'POST'
-    })
+    const result = await api.post<TradeProposalCreateResponse>('/trades/proposal')
 
     if (result.error) {
       error.value = result.error
