@@ -113,7 +113,7 @@ export const useSigning = () => {
         signingKeyId: keyData.id,
       }
 
-      const { data, error: apiError } = await apiFetch(
+      const { error: apiError } = await apiFetch<void>(
         `/trades/${proposal.id}/sign`,
         {
           method: 'POST',
@@ -121,7 +121,7 @@ export const useSigning = () => {
         }
       )
 
-      if (apiError || !data) {
+      if (apiError) {
         error.value = apiError || 'Failed to submit signature'
         return false
       }
