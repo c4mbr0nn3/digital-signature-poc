@@ -60,7 +60,7 @@ export const useSigning = () => {
    */
   const signTrade = async (
     proposal: TradeProposalDetails,
-    action: 'accept' | 'reject',
+    action: 'accepted' | 'rejected',
     passphrase: string
   ): Promise<boolean> => {
     isProcessing.value = true
@@ -75,7 +75,7 @@ export const useSigning = () => {
 
       // Step 2: Convert base64 strings to Uint8Arrays
       const encryptedPrivateKey = crypto.base64ToUint8Array(keyData.encryptedPrivateKey)
-      const salt = crypto.base64ToUint8Array(keyData.privateKeySalt)
+      const salt = crypto.base64ToUint8Array(keyData.salt)
       const iv = crypto.base64ToUint8Array(keyData.iv)
 
       // Step 3: Derive encryption key from passphrase and salt
