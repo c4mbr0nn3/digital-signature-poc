@@ -4,15 +4,18 @@
     :disabled="disabled"
     :title="title"
     :class="[
-      'flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium',
+      'flex items-center justify-center gap-2 rounded-lg transition-colors font-medium',
       'disabled:opacity-50 disabled:cursor-not-allowed',
+      sizeClass,
+      fullWidth ? 'w-full' : '',
       colorClass
     ]"
   >
     <!-- Loading spinner -->
     <svg
       v-if="loading"
-      class="animate-spin h-5 w-5"
+      :class="iconSizeClass"
+      class="animate-spin"
       fill="none"
       viewBox="0 0 24 24"
     >
@@ -35,19 +38,47 @@ interface Props {
   disabled?: boolean
   loading?: boolean
   title?: string
-  variant?: 'primary' | 'success' | 'warning' | 'danger'
+  variant?: 'primary' | 'success' | 'warning' | 'danger' | 'secondary'
+  size?: 'sm' | 'md' | 'lg'
+  fullWidth?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   loadingText: 'Loading...',
   disabled: false,
   loading: false,
-  variant: 'primary'
+  variant: 'primary',
+  size: 'md',
+  fullWidth: false
 })
 
 defineEmits<{
   click: []
 }>()
+
+const sizeClass = computed(() => {
+  switch (props.size) {
+    case 'sm':
+      return 'px-3 py-1.5 text-xs'
+    case 'lg':
+      return 'px-6 py-3 text-base'
+    case 'md':
+    default:
+      return 'px-4 py-2 text-sm'
+  }
+})
+
+const iconSizeClass = computed(() => {
+  switch (props.size) {
+    case 'sm':
+      return 'h-4 w-4'
+    case 'lg':
+      return 'h-6 w-6'
+    case 'md':
+    default:
+      return 'h-5 w-5'
+  }
+})
 
 const colorClass = computed(() => {
   switch (props.variant) {
@@ -57,6 +88,8 @@ const colorClass = computed(() => {
       return 'bg-orange-600 text-white hover:bg-orange-700'
     case 'danger':
       return 'bg-red-600 text-white hover:bg-red-700'
+    case 'secondary':
+      return 'border border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
     case 'primary':
     default:
       return 'bg-blue-600 text-white hover:bg-blue-700'

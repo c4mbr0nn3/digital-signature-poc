@@ -87,26 +87,22 @@
 
         <!-- Action Buttons -->
         <div class="flex gap-3">
-          <button
-            type="button"
-            @click="handleCancel"
+          <Button
+            label="Cancel"
+            variant="secondary"
+            full-width
             :disabled="isProcessing"
-            class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
+            @click="handleCancel"
+          />
+          <Button
+            :label="submitButtonLabel"
+            :loading-text="loadingButtonLabel"
+            variant="primary"
+            full-width
+            :loading="isProcessing"
             :disabled="isProcessing || !passphrase || !passphraseConfirm || !passphraseMatches"
-            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-          >
-            <span v-if="isProcessing">
-              {{ mode === 'onboard' ? 'Onboarding...' : 'Rotating...' }}
-            </span>
-            <span v-else>
-              {{ mode === 'onboard' ? 'Onboard Key' : 'Rotate Key' }}
-            </span>
-          </button>
+            @click="handleSubmit"
+          />
         </div>
       </form>
     </div>
@@ -138,6 +134,14 @@ const passphraseConfirm = ref('')
 
 const passphraseMatches = computed(() => {
   return passphrase.value === passphraseConfirm.value
+})
+
+const submitButtonLabel = computed(() => {
+  return props.mode === 'onboard' ? 'Onboard Key' : 'Rotate Key'
+})
+
+const loadingButtonLabel = computed(() => {
+  return props.mode === 'onboard' ? 'Onboarding...' : 'Rotating...'
 })
 
 // Clear fields when modal closes

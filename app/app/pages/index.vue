@@ -8,7 +8,7 @@
           <div class="flex items-center gap-4">
             <!-- Left Group: Key Management Buttons -->
             <div class="flex gap-2">
-              <HeaderButton
+              <Button
                 label="Onboard Key"
                 variant="success"
                 :disabled="hasActiveKey === true || hasActiveKey === null"
@@ -16,7 +16,7 @@
                 @click="handleOnboardKey"
               />
 
-              <HeaderButton
+              <Button
                 label="Rotate Key"
                 variant="warning"
                 title="Generate new key (supersedes old key)"
@@ -25,7 +25,7 @@
             </div>
 
             <!-- Right Group: Generate Button -->
-            <HeaderButton
+            <Button
               label="Generate"
               variant="primary"
               :loading="generating"
@@ -43,7 +43,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
               </template>
-            </HeaderButton>
+            </Button>
           </div>
         </div>
       </div>

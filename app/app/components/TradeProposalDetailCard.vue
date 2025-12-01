@@ -73,20 +73,26 @@
     </div>
 
     <div v-if="proposal.status === 'pending'" class="flex gap-4">
-      <button
+      <Button
+        label="Accept"
+        loading-text="Processing..."
+        variant="success"
+        size="lg"
+        full-width
+        :loading="isProcessing && pendingAction === 'accept'"
+        :disabled="isProcessing"
         @click="handleAccept"
+      />
+      <Button
+        label="Reject"
+        loading-text="Processing..."
+        variant="danger"
+        size="lg"
+        full-width
+        :loading="isProcessing && pendingAction === 'reject'"
         :disabled="isProcessing"
-        class="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {{ isProcessing && pendingAction === 'accept' ? 'Processing...' : 'Accept' }}
-      </button>
-      <button
         @click="handleReject"
-        :disabled="isProcessing"
-        class="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {{ isProcessing && pendingAction === 'reject' ? 'Processing...' : 'Reject' }}
-      </button>
+      />
     </div>
 
     <PassphraseModal

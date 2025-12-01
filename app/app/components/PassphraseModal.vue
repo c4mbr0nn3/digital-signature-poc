@@ -35,21 +35,22 @@
         </div>
 
         <div class="flex gap-3">
-          <button
-            type="button"
-            @click="handleCancel"
+          <Button
+            label="Cancel"
+            variant="secondary"
+            full-width
             :disabled="isProcessing"
-            class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
+            @click="handleCancel"
+          />
+          <Button
+            label="Confirm"
+            loading-text="Processing..."
+            variant="primary"
+            full-width
+            :loading="isProcessing"
             :disabled="isProcessing || !passphrase"
-            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-          >
-            {{ isProcessing ? 'Processing...' : 'Confirm' }}
-          </button>
+            @click="handleSubmit"
+          />
         </div>
       </form>
     </div>
