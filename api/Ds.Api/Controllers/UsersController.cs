@@ -29,8 +29,8 @@ public class UsersController(ILogger<UsersController> logger, ICustomerKeyServic
     {
         try
         {
-            await customerKeyService.OnboardCustomerKey(request);
-            return Ok();
+            var keyId = await customerKeyService.OnboardCustomerKey(request);
+            return Ok(keyId);
         }
         catch (Exception e)
         {

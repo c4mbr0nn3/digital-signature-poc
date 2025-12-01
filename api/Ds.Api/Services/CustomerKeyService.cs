@@ -8,7 +8,7 @@ namespace Ds.Api.Services;
 public interface ICustomerKeyService
 {
     Task<CustomerActiveKeyResponse?> GetActiveUserKey();
-    Task OnboardCustomerKey(CustomerKeyOnboardingRequest request);
+    Task<int> OnboardCustomerKey(CustomerKeyOnboardingRequest request);
     Task RotateCustomerKey(CustomerKeyOnboardingRequest request);
 }
 
@@ -27,7 +27,7 @@ public class CustomerKeyService(AppDbContext db) : ICustomerKeyService
         return activeKey;
     }
 
-    public async Task OnboardCustomerKey(CustomerKeyOnboardingRequest request)
+    public async Task<int> OnboardCustomerKey(CustomerKeyOnboardingRequest request)
     {
         var customer = await db.Customers.FirstOrDefaultAsync();
         if (customer == null) throw new Exception("Customer not found");
@@ -41,6 +41,7 @@ public class CustomerKeyService(AppDbContext db) : ICustomerKeyService
 
         customer.ActiveKeyId = customerKey.Id;
         await db.SaveChangesAsync();
+        return customerKey.Id;
     }
 
     public async Task RotateCustomerKey(CustomerKeyOnboardingRequest request)
