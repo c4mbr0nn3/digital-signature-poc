@@ -118,7 +118,7 @@ export const useKeyManagement = () => {
       }
 
       // Submit to server
-      const { data, error: apiError } = await apiFetch('/users/me/keys/onboarding', {
+      const { data, error: apiError } = await apiFetch<number>('/users/me/keys/onboarding', {
         method: 'POST',
         body: request,
       })
