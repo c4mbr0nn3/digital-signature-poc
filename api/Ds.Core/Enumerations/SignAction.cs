@@ -30,7 +30,7 @@ public static class SignActionParser
             "pending" => SignAction.Pending,
             "accepted" => SignAction.Accepted,
             "rejected" => SignAction.Rejected,
-            _ => throw new ArgumentException("Invalid sign action", nameof(action))
+            _ => throw new ArgumentException($"Invalid sign action: {action}", nameof(action))
         };
     }
 }
