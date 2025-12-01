@@ -131,12 +131,7 @@ export const useCrypto = () => {
    * @returns Uint8Array
    */
   const base64ToUint8Array = (base64: string): Uint8Array => {
-    const binaryString = window.atob(base64)
-    const bytes = new Uint8Array(binaryString.length)
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i)
-    }
-    return bytes
+    return Uint8Array.fromBase64(base64)
   }
 
   /**
@@ -145,11 +140,7 @@ export const useCrypto = () => {
    * @returns Base64 encoded string
    */
   const uint8ArrayToBase64 = (bytes: Uint8Array): string => {
-    let binaryString = ''
-    for (let i = 0; i < bytes.length; i++) {
-      binaryString += String.fromCharCode(bytes[i]!)
-    }
-    return btoa(binaryString)
+    return bytes.toBase64()
   }
 
   /**
