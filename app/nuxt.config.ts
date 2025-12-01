@@ -8,5 +8,6 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl: 'http://localhost:5071/api/v1'
     }
-  }
+  },
+  ssr: false,
 });
