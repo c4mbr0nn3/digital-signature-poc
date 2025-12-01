@@ -117,7 +117,7 @@ export const useSigning = () => {
         `/trades/${proposal.id}/sign`,
         {
           method: 'POST',
-          body: JSON.stringify(signRequest),
+          body: signRequest,
         }
       )
 

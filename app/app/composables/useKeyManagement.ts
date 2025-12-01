@@ -120,7 +120,7 @@ export const useKeyManagement = () => {
       // Submit to server
       const { data, error: apiError } = await apiFetch('/users/me/keys/onboarding', {
         method: 'POST',
-        body: JSON.stringify(request),
+        body: request,
       })
 
       if (apiError || !data) {
@@ -201,12 +201,12 @@ export const useKeyManagement = () => {
       }
 
       // Submit to server (rotate endpoint)
-      const { data, error: apiError } = await apiFetch('/users/me/keys/rotate', {
+      const { error: apiError } = await apiFetch<void>('/users/me/keys/rotate', {
         method: 'POST',
-        body: JSON.stringify(request),
+        body: request,
       })
 
-      if (apiError || !data) {
+      if (apiError) {
         error.value = apiError || 'Failed to rotate key'
         return false
       }
