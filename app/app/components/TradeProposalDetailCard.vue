@@ -149,7 +149,10 @@ const handleReject = () => {
 const handlePassphraseSubmit = async (passphrase: string) => {
   if (!pendingAction.value) return
 
-  const success = await signTrade(props.proposal, pendingAction.value, passphrase)
+  const action = pendingAction.value === 'accept' ? 'accepted' : 'rejected'
+  props.proposal.action = action
+
+  const success = await signTrade(props.proposal, action, passphrase)
 
   if (success) {
     showPassphraseModal.value = false
