@@ -19,6 +19,7 @@
               <Button
                 label="Rotate Key"
                 variant="warning"
+                :disabled="hasActiveKey === false || hasActiveKey === null"
                 title="Generate new key (supersedes old key)"
                 @click="handleRotateKey"
               />
