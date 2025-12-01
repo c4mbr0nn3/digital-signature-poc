@@ -46,7 +46,7 @@ public class TradesController(
         try
         {
             await tradeRecommendationService.SignTradeRecommendation(id, request);
-            return Ok();
+            return NoContent();
         }
         catch (Exception e)
         {

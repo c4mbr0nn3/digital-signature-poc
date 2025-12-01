@@ -45,7 +45,7 @@ public class UsersController(ILogger<UsersController> logger, ICustomerKeyServic
         try
         {
             await customerKeyService.RotateCustomerKey(request);
-            return Ok();
+            return NoContent();
         }
         catch (Exception e)
         {
