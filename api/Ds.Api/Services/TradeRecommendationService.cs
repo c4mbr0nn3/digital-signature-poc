@@ -121,7 +121,7 @@ public class TradeRecommendationService(AppDbContext db) : ITradeRecommendationS
         var tradeId = tradeRecommendation.Id.ToString();
         var action = request.SignedAction;
         var signedAt = request.SignedAt.ToString();
-        var metadataHash = tradeRecommendation.MetadataSha256;
+        var metadataHash = tradeRecommendation.MetadataSha256();
         var builder = new StringBuilder();
         builder.Append(prefix).Append(separator);
         builder.Append(tradeId).Append(separator);
