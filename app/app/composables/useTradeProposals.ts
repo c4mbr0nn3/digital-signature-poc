@@ -67,7 +67,7 @@ export const useTradeProposals = () => {
   }
 
   return {
-    proposals: readonly(proposals),
+    proposals,
     loading: readonly(loading),
     error: readonly(error),
     selectedProposal,

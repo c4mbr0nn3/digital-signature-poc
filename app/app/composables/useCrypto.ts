@@ -30,7 +30,7 @@ export const useCrypto = () => {
     const derivedKey = await window.crypto.subtle.deriveKey(
       {
         name: 'PBKDF2',
-        salt: salt,
+        salt: salt as BufferSource,
         iterations: 600000,
         hash: 'SHA-256',
       },
@@ -62,10 +62,10 @@ export const useCrypto = () => {
     const decryptedData = await window.crypto.subtle.decrypt(
       {
         name: 'AES-GCM',
-        iv: iv,
+        iv: iv as BufferSource,
       },
       derivedKey,
-      encryptedPrivateKey
+      encryptedPrivateKey as BufferSource
     )
 
     // Import decrypted data as ECDSA private key
@@ -131,7 +131,7 @@ export const useCrypto = () => {
    * @returns Uint8Array
    */
   const base64ToUint8Array = (base64: string): Uint8Array => {
-    const binaryString = atob(base64)
+    const binaryString = window.atob(base64)
     const bytes = new Uint8Array(binaryString.length)
     for (let i = 0; i < binaryString.length; i++) {
       bytes[i] = binaryString.charCodeAt(i)
@@ -147,7 +147,7 @@ export const useCrypto = () => {
   const uint8ArrayToBase64 = (bytes: Uint8Array): string => {
     let binaryString = ''
     for (let i = 0; i < bytes.length; i++) {
-      binaryString += String.fromCharCode(bytes[i])
+      binaryString += String.fromCharCode(bytes[i]!)
     }
     return btoa(binaryString)
   }
@@ -210,7 +210,7 @@ export const useCrypto = () => {
     const encryptedData = await window.crypto.subtle.encrypt(
       {
         name: 'AES-GCM',
-        iv: iv,
+        iv: iv as BufferSource,
       },
       derivedKey,
       privateKeyData
