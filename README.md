@@ -21,7 +21,7 @@ This is a monorepo containing both frontend and backend applications:
 
 ```text
 digital-signature-poc/
-├── app/              # Nuxt 3 frontend (Vue 3, TypeScript, Tailwind CSS)
+├── app/              # Nuxt 4 frontend (Vue 3, TypeScript, Tailwind CSS v4)
 └── api/              # ASP.NET Core 10 backend (.NET 10, EF Core, SQLite)
     ├── Ds.Api/       # Web API layer
     └── Ds.Core/      # Domain entities and persistence
