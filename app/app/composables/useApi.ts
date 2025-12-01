@@ -4,28 +4,30 @@ export const useApi = () => {
 
   const apiFetch = async <T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: Parameters<typeof $fetch>[1] = {}
   ): Promise<{ data: T | null; error: string | null }> => {
     try {
-      const response = await fetch(`${baseURL}${endpoint}`, {
+      const data = await $fetch<T>(endpoint, {
+        baseURL,
+        ...options,
         headers: {
           'Content-Type': 'application/json',
           ...options.headers,
         },
-        ...options,
       })
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-      }
-
-      const data = await response.json()
       return { data, error: null }
-    } catch (error) {
+    } catch (error: any) {
       console.error('API Error:', error)
+
+      const errorMessage = error?.data?.message
+        || error?.message
+        || error?.statusMessage
+        || 'Unknown error'
+
       return {
         data: null,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: errorMessage,
       }
     }
   }
