@@ -233,10 +233,17 @@ All signatures are generated from a canonical string format:
 TRADEv1|{trade_id}|{action}|{signed_at}|{metadata_hash}
 ```
 
+Where:
+
+- `trade_id`: Integer ID of the trade proposal (e.g., `123`)
+- `action`: Lowercase action string - either `accepted` or `rejected`
+- `signed_at`: Unix timestamp in milliseconds (e.g., `1733140200000`)
+- `metadata_hash`: SHA-256 hash of the raw metadata JSON string (hex format)
+
 Example:
 
 ```text
-TRADEv1|550e8400-e29b-41d4-a716-446655440000|ACCEPT|2024-12-01T10:30:00Z|a7f3b2c1...
+TRADEv1|123|accepted|1733140200000|a7f3b2c1d4e5f6a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2
 ```
 
 This ensures consistent signature verification between client and server.
