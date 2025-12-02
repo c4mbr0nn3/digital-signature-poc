@@ -291,12 +291,16 @@ Edit `api/Ds.Api/appsettings.json` or `appsettings.Development.json`:
 
 ### Key Endpoints
 
-- `GET /api/v1/users/{userId}/active-key` - Get user's active key material
-- `POST /api/v1/users/{userId}/keys` - Onboard new signing key
-- `PUT /api/v1/users/{userId}/keys/rotate` - Rotate to new signing key
+**User Key Management:**
+
+- `GET /api/v1/users/me/keys/active` - Get user's active key material
+- `POST /api/v1/users/me/keys/onboarding` - Onboard new signing key
+- `POST /api/v1/users/me/keys/rotate` - Rotate to new signing key
+
+**Trade Recommendations:**
+
 - `GET /api/v1/trades` - List trade recommendations
-- `POST /api/v1/trades` - Create new trade recommendation
-- `GET /api/v1/trades/{id}` - Get trade details
+- `POST /api/v1/trades/proposal` - Create new random trade recommendation (for testing)
 - `POST /api/v1/trades/{id}/sign` - Sign a trade recommendation
 
 ## Security Considerations
