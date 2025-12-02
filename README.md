@@ -314,7 +314,7 @@ Edit `api/Ds.Api/appsettings.json` or `appsettings.Development.json`:
 
 ## License
 
-This is a proof-of-concept project for demonstration purposes.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
 ## Contributing
 
