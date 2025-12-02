@@ -40,15 +40,44 @@ public class TradeRecommendation
     [NotMapped] public TradeStatus Status => SignedAt.HasValue ? TradeStatus.Signed : TradeStatus.Pending;
 }
 
+/// <summary>
+/// Trade recommendation metadata containing list of trades
+/// </summary>
 public class Metadata
 {
     [JsonPropertyName("trades")] public List<TradeData> Trades { get; set; } = [];
 }
 
+/// <summary>
+/// Individual trade item details
+/// </summary>
 public class TradeData
 {
-    [JsonPropertyName("isin")] public string Isin { get; set; } = string.Empty;
-    [JsonPropertyName("qty")] public int Quantity { get; set; }
-    [JsonPropertyName("price")] public decimal Price { get; set; }
-    [JsonPropertyName("ccy")] public string Currency { get; set; } = string.Empty;
+    /// <summary>
+    /// Item ISIN identifier
+    /// </summary>
+    /// <example>LU0290358497</example>
+    [JsonPropertyName("isin")]
+    public string Isin { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Item quantity
+    /// </summary>
+    /// <example>10</example>
+    [JsonPropertyName("qty")]
+    public int Quantity { get; set; }
+
+    /// <summary>
+    /// Item price
+    /// </summary>
+    /// <example>34.56</example>
+    [JsonPropertyName("price")]
+    public decimal Price { get; set; }
+
+    /// <summary>
+    /// Item currency (3-letter code)
+    /// </summary>
+    /// <example>EUR</example>
+    [JsonPropertyName("ccy")]
+    public string Currency { get; set; } = string.Empty;
 }
