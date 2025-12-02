@@ -11,7 +11,7 @@ public class TradesController(
     ITradeRecommendationService tradeRecommendationService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<string>> GetTradeRecommendations()
+    public async Task<ActionResult<List<TradeProposalDetails>>> GetTradeRecommendations()
     {
         try
         {
